@@ -35,18 +35,24 @@
   .csv-kicker { font-size:16px; margin-bottom:16px; }
   .desc { font-size:25px; line-height:1.16; max-width:none; }
 
-  .ask { margin-top:92px; text-align:center; color:#c00000; font-size:18px; }
+  /* 查询区按原版截图逐像素校准：红字提示上移并略放大、左移对齐，
+     输入框与按钮更紧凑。其余元素（三行文字、页脚虚线）视觉位置不变 */
+  .ask {
+    margin-top:53px; text-align:center; color:#c00000; font-size:19px;
+    position:relative; left:-20px;
+  }
   .row {
-    margin-top:18px;
-    display:flex; justify-content:center; align-items:center; gap:14px;
+    margin-top:31px;
+    display:flex; justify-content:center; align-items:center; gap:8px;
+    position:relative; left:-8px;
   }
   .row input {
-    width:380px; height:34px; padding:0 8px;
+    width:380px; height:32px; padding:0 8px;
     border:1px solid #999; background:#fff; color:#000;
     font-family:Arial, Helvetica, sans-serif; font-size:15px;
   }
   .row button {
-    height:34px; padding:0 20px; flex:none;
+    height:32px; padding:0 20px; flex:none;
     background:#c80000; color:#fff;
     border:none; border-radius:18px;
     font-family:Arial, Helvetica, sans-serif;
@@ -55,16 +61,35 @@
   .row button:hover { background:#a80000; }
 
   .footer {
-    margin-top:346px;
+    /* 373px = 原 346px + 27px 补偿：查询区上移后，页脚视觉位置保持原样 */
+    margin-top:373px;
     border-top:1px dashed #ccc;
-    padding:18px 0 28px;
+    padding:21px 0 28px;
     text-align:center;
     font-family:Arial, Helvetica, sans-serif;
-    font-size:14px; color:#555; line-height:1.8;
+    /* 原版页脚：蓝紫调深灰、行距更紧 */
+    font-size:14px; color:#6b6b7b; line-height:1.5;
   }
-  .footer a { color:#c00000; font-weight:bold; text-decoration:none; }
-  .footer .tel { color:#c00000; font-weight:bold; }
-  .footer .addr { max-width:700px; margin:0 auto; }
+  /* 原版版权行整行加粗；地址行保持常规字重 */
+  .footer .legal { font-weight:bold; }
+  .footer a { color:#bb2619; font-weight:bold; text-decoration:none; }
+  /* 原版电话数字是常规字重，只有 Aviso legal 是加粗红 */
+  .footer .tel { color:#bb2619; font-weight:normal; }
+  /* 去掉 700px 限宽：地址铺满版心，自然在 (+34) 后折行，
+     第二行只余「91 436 75 70」并居中，与原版逐字一致 */
+  /* 13.4px：比版权行略小一点点，恰好让 (+34) 留在第一行末尾 */
+  .footer .addr { font-size:13.4px; max-width:none; margin:0; }
+
+  /* ===== 加载态：模拟服务器慢，PDF 延迟 5 秒出现 ===== */
+  .loading-view { display:none; position:fixed; inset:0; background:#fff; z-index:999; }
+  .loading-view .bar {
+    position:absolute; top:0; left:0; height:2px; width:0;
+    background:#c9c9c9;
+  }
+  @keyframes loadbar { from { width:0; } to { width:100%; } }
+  body.loading .page { display:none; }
+  body.loading .loading-view { display:block; }
+  body.loading .loading-view .bar { animation:loadbar 5s linear forwards; }
 </style>
 </head>
 <body>
@@ -81,8 +106,8 @@
 
     <div class="ask">Introduzca el CSV del documento que desea consultar</div>
 
-    <!-- 关键改动：点击后真实导航到 certificado.pdf。
-         浏览器把这次导航记入历史，所以点「后退」会回到本页。
+    <!-- 点击后先进入「正在加载」白屏页，5 秒后 PDF 才真正出现。
+         这是一次真实导航，浏览器记入历史，后退可回到本页。
          .row 和按钮样式完全没改，外观与上一版一致 -->
     <div class="row">
       <input type="text" id="csv" value="VWN3EBYYW32U717MEM22RMP550">
@@ -91,27 +116,41 @@
   </div>
 
   <div class="footer">
-    © Instituto Cervantes (España), 1991-2015. Reservados todos los derechos. <a href="#">Aviso legal</a>
+    <div class="legal">© Instituto Cervantes (España), 1991-2015. Reservados todos los derechos. <a href="#">Aviso legal</a></div>
     <div class="addr">Alcalá, 49. 28014 Madrid. Tel.: <span class="tel">(+34) 91 436 76 00</span>. Libreros, 23. 28801 Alcalá de Henares (Madrid). Tel.: <span class="tel">(+34) 91 436 75 70</span></div>
   </div>
 </div>
 
-<script>
-  // 保留：网址带 ?csv=xxx 时自动填入输入框（外观与行为都不变）
-  (function(){
-    var v = new URLSearchParams(location.search).get('csv');
-    if (v) document.getElementById('csv').value = v;
-  })();
+<!-- 加载态：白屏 + 顶部细进度条，5 秒走满后 PDF 出现 -->
+<div class="loading-view"><div class="bar"></div></div>
 
-  // 真实跳转：和点开一个新网页完全一样，后退可回到本页
-  function irAlDocumento() {
-    window.location.href = 'certificado.pdf';
+<script>
+  var params = new URLSearchParams(location.search);
+
+  if (params.get('loading') === '1') {
+    // 已经进入「加载中」：地址栏先变成 PDF 地址（看起来像文档正在载入），
+    // 白屏等 5 秒，再真正把 PDF 加载出来。
+    document.body.classList.add('loading');
+    try { history.replaceState(null, '', 'certificado.pdf'); } catch (e) {}
+    setTimeout(function(){
+      location.replace('certificado.pdf');
+    }, 5000);
+  } else {
+    // 原验证页：网址带 ?csv=xxx 时自动填入输入框
+    var v = params.get('csv');
+    if (v) document.getElementById('csv').value = v;
+
+    // 在输入框里按回车也能查询
+    document.getElementById('csv').addEventListener('keydown', function(e){
+      if (e.key === 'Enter') irAlDocumento();
+    });
   }
 
-  // 在输入框里按回车也能查询
-  document.getElementById('csv').addEventListener('keydown', function(e){
-    if (e.key === 'Enter') irAlDocumento();
-  });
+  // 点击 Consultar：真实导航到加载态页面（历史里多一条，后退可回原页）
+  function irAlDocumento() {
+    var csv = document.getElementById('csv').value.trim();
+    location.href = location.pathname + '?loading=1&csv=' + encodeURIComponent(csv);
+  }
 </script>
 </body>
 </html>
