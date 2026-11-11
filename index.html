@@ -2,8 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<!-- 关键：不使用 device-width。固定 1090 视口，iPhone Safari 会把整页等比缩小，
-     和原版官网在手机上的表现一致；桌面浏览器忽略此行，外观完全不变 -->
+<!-- 固定 1090 视口：iPhone Safari 等比缩小整页，桌面外观不变 -->
 <meta name="viewport" content="width=1090">
 <title>Instituto Cervantes. Cotejo del código de verificación de los documentos electrónicos</title>
 <style>
@@ -13,13 +12,13 @@
     color:#222; background:#fff;
   }
 
-  /* 上一版版心：1090px 定宽居中（桌面不变，手机被等比缩小） */
+  /* 版心：1090px 定宽居中 */
   .page {
     width:1090px; max-width:100%; margin:0 auto;
     padding-top:18px;
   }
 
-  /* 官方红头：原版截图整条内嵌，logo 与 cervantes.es 大字 100% 一致 */
+  /* 官方红头：原版截图整条内嵌 */
   .topbar { background:#cc0000; line-height:0; }
   .banner { display:block; width:100%; height:auto; }
 
@@ -50,8 +49,6 @@
   }
   .row button:hover { background:#a80000; }
 
-  /* 关键：页脚改用固定像素间距，不再用视口高度单位。
-     固定 346px 让桌面与手机等比一致，虚线位置对齐原版 */
   .footer {
     margin-top:346px;
     border-top:1px dashed #ccc;
@@ -62,22 +59,7 @@
   }
   .footer a { color:#c00000; font-weight:bold; text-decoration:none; }
   .footer .tel { color:#c00000; font-weight:bold; }
-  /* 限宽让长地址自然折成两行，第二行电话居中，和原版一致 */
   .footer .addr { max-width:700px; margin:0 auto; }
-
-  /* 点击 Consultar 后：整页只剩证书图片 */
-  .stage { display:none; }
-  body.solo { overflow:hidden; }
-  body.solo .page { display:none; }
-  body.solo .stage {
-    display:flex; position:fixed; inset:0;
-    align-items:center; justify-content:center;
-    padding:24px; background:#fff;
-  }
-  .stage img {
-    max-width:100%; max-height:92vh; object-fit:contain;
-    box-shadow:0 2px 16px rgba(0,0,0,.22);
-  }
 </style>
 </head>
 <body>
@@ -94,10 +76,13 @@
 
     <div class="ask">Introduzca el CSV del documento que desea consultar</div>
 
-    <form class="row" id="f">
+    <!-- 关键改动：点击后真实导航到 certificado.pdf。
+         浏览器把这次导航记入历史，所以点「后退」会回到本页。
+         .row 和按钮样式完全没改，外观与上一版一致 -->
+    <div class="row">
       <input type="text" id="csv" value="VWN3EBYYW32U717MEM22RMP550">
-      <button type="submit">Consultar</button>
-    </form>
+      <button type="button" onclick="irAlDocumento()">Consultar</button>
+    </div>
   </div>
 
   <div class="footer">
@@ -106,18 +91,21 @@
   </div>
 </div>
 
-<div class="stage">
-  <img src="certificado.jpg" alt="Diploma DELE">
-</div>
-
 <script>
+  // 保留：网址带 ?csv=xxx 时自动填入输入框（外观与行为都不变）
   (function(){
     var v = new URLSearchParams(location.search).get('csv');
     if (v) document.getElementById('csv').value = v;
   })();
-  document.getElementById('f').addEventListener('submit', function(e){
-    e.preventDefault();
-    document.body.classList.add('solo');
+
+  // 真实跳转：和点开一个新网页完全一样，后退可回到本页
+  function irAlDocumento() {
+    window.location.href = 'certificado.pdf';
+  }
+
+  // 在输入框里按回车也能查询
+  document.getElementById('csv').addEventListener('keydown', function(e){
+    if (e.key === 'Enter') irAlDocumento();
   });
 </script>
 </body>
