@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de documentos - cervantes.es</title>
+    <style>
+        /* 全局字体与重置 */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #333;
+        }
+        
+        /* 顶部红色横幅 */
+        .header {
+            background-color: #c52b1a; /* 塞万提斯红 */
+            height: 82px;
+            display: flex;
+            align-items: center;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        .header-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+        }
+        .logo-text {
+            color: white;
+            font-size: 14px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .logo-icon {
+            color: white;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        .banner-title {
+            color: rgba(255,255,255,0.5); /* 半透明大字 */
+            font-size: 48px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            flex-grow: 1;
+            text-align: right;
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        /* 主体内容区 */
+        .main-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        h1 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .sub-title {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .desc {
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+        .input-label {
+            color: #c52b1a;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        /* 输入框与按钮 */
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+        input[type="text"] {
+            width: 380px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+        button {
+            background-color: #c52b1a;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            font-size: 14px;
+            border-radius: 15px; /* 圆角按钮 */
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #a52214;
+        }
+
+        /* 证书展示区 */
+        #result {
+            display: none;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        #result img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+        }
+
+        /* 底部版权 */
+        .footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px dotted #ccc;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            line-height: 1.6;
+        }
+        .footer .legal {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .footer .legal a {
+            color: #c52b1a;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .footer .red {
+            color: #c52b1a;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部 -->
+    <div class="header">
+        <div class="header-content">
+            <span class="logo-text">Instituto</span>
+            <span class="logo-icon">✚</span>
+            <span class="logo-text">Cervantes</span>
+            <div class="banner-title">cervantes.es</div>
+        </div>
+    </div>
+
+    <!-- 主体 -->
+    <div class="main-container">
+        <h1>Verificación de documentos</h1>
+        <div class="sub-title">CSV</div>
+        <div class="desc">Consulta de documentos firmados por el Instituto Cervantes<br>a través de su Código Seguro de Verificación (CSV)</div>
+        
+        <div class="input-label">Introduzca el CSV del documento que desea consultar</div>
+        
+        <div class="search-box">
+            <!-- 默认填入你要求的数字 -->
+            <input type="text" id="csvInput" value="VWN3EBYYW32U717MEM22RMP555">
+            <button onclick="consultar()">Consultar</button>
+        </div>
+
+        <!-- 点击后显示的证书图 -->
+        <div id="result">
+            <!-- 请将下面的 src 替换为你实际存放的证书图片链接 -->
+            <img src="certificado.jpg" alt="Diploma DELE">
+        </div>
+    </div>
+
+    <!-- 底部 -->
+    <div class="main-container">
+        <div class="footer">
+            <div class="legal">© Instituto Cervantes (España), 1991-2015. Reservados todos los derechos. <a href="#">Aviso legal</a></div>
+            <div>Alcalá, 49. 28014 Madrid. Tel.: (<span class="red">+34</span>) <span class="red">91 436 76 00</span>. Libreros, 23. 28801 Alcalá de Henares (Madrid). Tel.: (<span class="red">+34</span>)</div>
+            <div><span class="red">91 436 75 70</span></div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载：支持 ?csv=xxx 自动填入
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const csv = params.get('csv');
+            if (csv) {
+                document.getElementById('csvInput').value = csv;
+            }
+        };
+
+        // 点击查询
+        function consultar() {
+            const val = document.getElementById('csvInput').value.trim();
+            if (val !== "") {
+                document.getElementById('result').style.display = 'block';
+                // 更新地址栏（不刷新）
+                const newUrl = window.location.pathname + '?csv=' + encodeURIComponent(val);
+                window.history.pushState({}, '', newUrl);
+            }
+        }
+    </script>
+</body>
+</html>
