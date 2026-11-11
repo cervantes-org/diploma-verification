@@ -3,204 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificación de documentos - cervantes.es</title>
+    <title>Verificación de documentos - Instituto Cervantes</title>
     <style>
-        /* 全局字体与重置 */
+        /* 基础重置与字体 */
         body {
-            font-family: Arial, Helvetica, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #ffffff;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
             color: #333;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         
-        /* 顶部红色横幅 */
-        .header {
-            background-color: #c52b1a; /* 塞万提斯红 */
-            height: 82px;
+        /* 初始状态容器 */
+        .main-container {
+            flex: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-        .header-content {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-        }
-        .logo-text {
-            color: white;
-            font-size: 14px;
-            margin-right: 10px;
-            font-weight: bold;
-        }
-        .logo-icon {
-            color: white;
-            font-size: 24px;
-            margin-right: 15px;
-        }
-        .banner-title {
-            color: rgba(255,255,255,0.5); /* 半透明大字 */
-            font-size: 48px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            flex-grow: 1;
-            text-align: right;
-            font-family: "Times New Roman", Times, serif;
+            padding-top: 20px;
         }
 
-        /* 主体内容区 */
-        .main-container {
+        /* 红头区域 */
+        .header-red {
+            width: 100%;
+            background-color: #a3001e;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding-left: 40px;
+            box-sizing: border-box;
+        }
+        .header-text {
+            color: #fff;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+        .header-text strong {
+            font-size: 16px;
+        }
+
+        /* 主体内容 */
+        .content {
+            width: 100%;
             max-width: 800px;
-            margin: 40px auto;
+            margin: 20px auto;
             padding: 0 20px;
+            box-sizing: border-box;
         }
         h1 {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .sub-title {
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-        .desc {
-            font-size: 16px;
-            margin-bottom: 30px;
-            line-height: 1.4;
-        }
-        .input-label {
-            color: #c52b1a;
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-
-        /* 输入框与按钮 */
-        .search-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 40px;
-        }
-        input[type="text"] {
-            width: 380px;
-            padding: 8px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-        }
-        button {
-            background-color: #c52b1a;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            font-size: 14px;
-            border-radius: 15px; /* 圆角按钮 */
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #a52214;
-        }
-
-        /* 证书展示区 */
-        #result {
-            display: none;
-            margin-top: 20px;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-        #result img {
-            max-width: 100%;
-            border: 1px solid #ddd;
-        }
-
-        /* 底部版权 */
-        .footer {
-            margin-top: 60px;
-            padding-top: 20px;
-            border-top: 1px dotted #ccc;
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-            line-height: 1.6;
-        }
-        .footer .legal {
-            font-size: 16px;
+            font-size: 18px;
+            color: #000;
             margin-bottom: 5px;
         }
-        .footer .legal a {
-            color: #c52b1a;
-            text-decoration: none;
-            font-weight: bold;
+        h2 {
+            font-size: 14px;
+            color: #555;
+            font-weight: normal;
+            margin-top: 0;
+            margin-bottom: 20px;
         }
-        .footer .red {
-            color: #c52b1a;
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 300px;
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #eee;
+            border: 1px solid #999;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        /* 底部版权 */
+        .footer {
+            width: 100%;
+            text-align: center;
+            font-size: 11px;
+            color: #666;
+            padding: 20px;
+            border-top: 1px solid #eee;
+            margin-top: auto;
+        }
+
+        /* 图片展示状态（点击后激活） */
+        .image-only-mode .header-red,
+        .image-only-mode .content h1,
+        .image-only-mode .content h2,
+        .image-only-mode .input-group,
+        .image-only-mode .footer {
+            display: none !important;
+        }
+        .image-only-mode .main-container {
+            padding-top: 0;
+            justify-content: center;
+        }
+        .image-only-mode .content {
+            margin: 0;
+            max-width: 100%;
+            padding: 0;
+        }
+        .image-only-mode button {
+            display: none !important; /* 隐藏按钮 */
+        }
+        
+        /* 图片样式：自适应且居中 */
+        #cert-image {
+            display: none;
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            margin: 20px auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .image-only-mode #cert-image {
+            display: block;
         }
     </style>
 </head>
 <body>
-
-    <!-- 顶部 -->
-    <div class="header">
-        <div class="header-content">
-            <span class="logo-text">Instituto</span>
-            <span class="logo-icon">✚</span>
-            <span class="logo-text">Cervantes</span>
-            <div class="banner-title">cervantes.es</div>
+    <div class="header-red">
+        <div class="header-text">
+            <strong>Instituto Cervantes</strong><br>
+            cervantes.es
         </div>
     </div>
 
-    <!-- 主体 -->
     <div class="main-container">
-        <h1>Verificación de documentos</h1>
-        <div class="sub-title">CSV</div>
-        <div class="desc">Consulta de documentos firmados por el Instituto Cervantes<br>a través de su Código Seguro de Verificación (CSV)</div>
-        
-        <div class="input-label">Introduzca el CSV del documento que desea consultar</div>
-        
-        <div class="search-box">
-            <!-- 默认填入你要求的数字 -->
-            <input type="text" id="csvInput" value="VWN3EBYYW32U717MEM22RMP555">
-            <button onclick="consultar()">Consultar</button>
-        </div>
+        <div class="content">
+            <h1>Verificación de documentos</h1>
+            <h2>Consulta de documentos firmados por el Instituto Cervantes a través de su Código Seguro de Verificación (CSV)</h2>
+            
+            <form id="verify-form">
+                <div class="input-group">
+                    <label>Introduzca el CSV del documento que desea consultar</label>
+                    <input type="text" id="csv-input" value="VWN3EBYYW32U717MEM22RMP550">
+                </div>
+                <button type="submit">Consultar</button>
+            </form>
 
-        <!-- 点击后显示的证书图 -->
-        <div id="result">
-            <!-- 请将下面的 src 替换为你实际存放的证书图片链接 -->
-            <img src="certificado.jpg" alt="Diploma DELE">
+            <!-- 证书图片，初始隐藏 -->
+            <img id="cert-image" src="certificado.jpg" alt="Certificado">
         </div>
     </div>
 
-    <!-- 底部 -->
-    <div class="main-container">
-        <div class="footer">
-            <div class="legal">© Instituto Cervantes (España), 1991-2015. Reservados todos los derechos. <a href="#">Aviso legal</a></div>
-            <div>Alcalá, 49. 28014 Madrid. Tel.: (<span class="red">+34</span>) <span class="red">91 436 76 00</span>. Libreros, 23. 28801 Alcalá de Henares (Madrid). Tel.: (<span class="red">+34</span>)</div>
-            <div><span class="red">91 436 75 70</span></div>
-        </div>
+    <div class="footer">
+        © Instituto Cervantes (España), 1991-2015. Reservados todos los derechos. Aviso legal<br>
+        Alcalá, 49. 28014 Madrid. Tel.: (+34) 91 436 76 00. Libreros, 23. 28801 Alcalá de Henares (Madrid). Tel.: (+34) 91 436 75 70
     </div>
 
     <script>
-        // 页面加载：支持 ?csv=xxx 自动填入
-        window.onload = function() {
-            const params = new URLSearchParams(window.location.search);
-            const csv = params.get('csv');
-            if (csv) {
-                document.getElementById('csvInput').value = csv;
-            }
-        };
-
-        // 点击查询
-        function consultar() {
-            const val = document.getElementById('csvInput').value.trim();
-            if (val !== "") {
-                document.getElementById('result').style.display = 'block';
-                // 更新地址栏（不刷新）
-                const newUrl = window.location.pathname + '?csv=' + encodeURIComponent(val);
-                window.history.pushState({}, '', newUrl);
-            }
-        }
+        document.getElementById('verify-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // 阻止页面跳转刷新
+            
+            // 添加类名，触发 CSS 隐藏其他元素
+            document.body.classList.add('image-only-mode');
+            
+            // 可选：如果想让图片加载失败时提示，可以加个监听
+            var img = document.getElementById('cert-image');
+            img.onerror = function() {
+                alert('No se encontró la imagen certificado.jpg. Asegúrate de que está en la misma carpeta.');
+            };
+        });
     </script>
 </body>
 </html>
