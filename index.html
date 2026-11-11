@@ -8,7 +8,8 @@
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
-    font-family:"Times New Roman", Times, Georgia, serif;
+    /* 原版是无衬线字体（Arial/Helvetica），不是 Times 衬线体 */
+    font-family:Arial, Helvetica, sans-serif;
     color:#222; background:#fff;
   }
 
@@ -22,13 +23,17 @@
   .topbar { background:#cc0000; line-height:0; }
   .banner { display:block; width:100%; height:auto; }
 
+  /* 左边界 19.2%（实测原版正文起点），宽度 680px 让说明文字
+     恰好在 "Cervantes" 后换行，与原版逐字一致 */
   .content {
-    width:620px; max-width:100%; margin:0 auto;
-    padding-top:58px;
+    width:680px; max-width:100%;
+    margin-left:19.2%; margin-right:0;
+    padding-top:45px;
   }
-  h1 { font-size:22px; font-weight:bold; margin-bottom:26px; }
-  .csv-kicker { font-size:18px; margin-bottom:20px; }
-  .desc { font-size:16px; line-height:1.55; max-width:600px; }
+  /* 字号按 iPhone 截图逐像素校准：标题 22、CSV 16、说明 25 */
+  h1 { font-size:22px; font-weight:bold; margin-bottom:23px; }
+  .csv-kicker { font-size:16px; margin-bottom:16px; }
+  .desc { font-size:25px; line-height:1.16; max-width:none; }
 
   .ask { margin-top:92px; text-align:center; color:#c00000; font-size:18px; }
   .row {
