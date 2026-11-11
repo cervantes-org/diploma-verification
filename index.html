@@ -2,31 +2,35 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 关键：不使用 device-width。固定 1090 视口，iPhone Safari 会把整页等比缩小，
+     和原版官网在手机上的表现一致；桌面浏览器忽略此行，外观完全不变 -->
+<meta name="viewport" content="width=1090">
 <title>Instituto Cervantes. Cotejo del código de verificación de los documentos electrónicos</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
     font-family:"Times New Roman", Times, Georgia, serif;
-    color:#222; background:#fff; min-height:100vh;
-  }
-  .page {
-    width:1090px; max-width:100%; margin:0 auto;
-    padding-top:18px; min-height:100vh;
-    display:flex; flex-direction:column;
+    color:#222; background:#fff;
   }
 
-  /* ① 红头：直接用原版截图里的整条横幅（官方 logo + cervantes.es 大字），100% 还原 */
+  /* 上一版版心：1090px 定宽居中（桌面不变，手机被等比缩小） */
+  .page {
+    width:1090px; max-width:100%; margin:0 auto;
+    padding-top:18px;
+  }
+
+  /* 官方红头：原版截图整条内嵌，logo 与 cervantes.es 大字 100% 一致 */
   .topbar { background:#cc0000; line-height:0; }
   .banner { display:block; width:100%; height:auto; }
 
   .content {
     width:620px; max-width:100%; margin:0 auto;
-    padding-top:58px; flex:1;
+    padding-top:58px;
   }
   h1 { font-size:22px; font-weight:bold; margin-bottom:26px; }
   .csv-kicker { font-size:18px; margin-bottom:20px; }
   .desc { font-size:16px; line-height:1.55; max-width:600px; }
+
   .ask { margin-top:92px; text-align:center; color:#c00000; font-size:18px; }
   .row {
     margin-top:18px;
@@ -35,29 +39,33 @@
   .row input {
     width:380px; height:34px; padding:0 8px;
     border:1px solid #999; background:#fff; color:#000;
-    font-family:Arial,Helvetica,sans-serif; font-size:15px;
+    font-family:Arial, Helvetica, sans-serif; font-size:15px;
   }
   .row button {
-    height:34px; padding:0 20px;
+    height:34px; padding:0 20px; flex:none;
     background:#c80000; color:#fff;
     border:none; border-radius:18px;
-    font-family:Arial,Helvetica,sans-serif;
+    font-family:Arial, Helvetica, sans-serif;
     font-size:15px; font-weight:bold; cursor:pointer;
   }
   .row button:hover { background:#a80000; }
 
-  /* ③ 虚线和版权整体上移，下面留白（对齐原版） */
+  /* 关键：页脚改用固定像素间距，不再用视口高度单位。
+     固定 346px 让桌面与手机等比一致，虚线位置对齐原版 */
   .footer {
-    margin-top:auto;
-    margin-bottom:28vh;
+    margin-top:346px;
     border-top:1px dashed #ccc;
     padding:18px 0 28px;
     text-align:center;
+    font-family:Arial, Helvetica, sans-serif;
     font-size:14px; color:#555; line-height:1.8;
   }
   .footer a { color:#c00000; font-weight:bold; text-decoration:none; }
+  .footer .tel { color:#c00000; font-weight:bold; }
+  /* 限宽让长地址自然折成两行，第二行电话居中，和原版一致 */
+  .footer .addr { max-width:700px; margin:0 auto; }
 
-  /* 点击 Consultar 后：整页只剩图片 */
+  /* 点击 Consultar 后：整页只剩证书图片 */
   .stage { display:none; }
   body.solo { overflow:hidden; }
   body.solo .page { display:none; }
@@ -83,7 +91,9 @@
     <h1>Verificación de documentos</h1>
     <div class="csv-kicker">CSV</div>
     <p class="desc">Consulta de documentos firmados por el Instituto Cervantes a través de su Código Seguro de Verificación (CSV)</p>
+
     <div class="ask">Introduzca el CSV del documento que desea consultar</div>
+
     <form class="row" id="f">
       <input type="text" id="csv" value="VWN3EBYYW32U717MEM22RMP550">
       <button type="submit">Consultar</button>
@@ -91,8 +101,8 @@
   </div>
 
   <div class="footer">
-    © Instituto Cervantes (España), 1991-2015. Reservados todos los derechos. <a href="#">Aviso legal</a><br>
-    Alcalá, 49. 28014 Madrid. Tel.: (+34) 91 436 76 00. Libreros, 23. 28801 Alcalá de Henares (Madrid). Tel.: (+34) 91 436 75 70
+    © Instituto Cervantes (España), 1991-2015. Reservados todos los derechos. <a href="#">Aviso legal</a>
+    <div class="addr">Alcalá, 49. 28014 Madrid. Tel.: <span class="tel">(+34) 91 436 76 00</span>. Libreros, 23. 28801 Alcalá de Henares (Madrid). Tel.: <span class="tel">(+34) 91 436 75 70</span></div>
   </div>
 </div>
 
